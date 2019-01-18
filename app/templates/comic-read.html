@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    漫画阅读
+    {{ chapter.name }}|{{ comic.title }}
 {% endblock %}
 
 {% block style %}
@@ -45,7 +45,7 @@
 
             <li class="page-item">
                 <a class="page-link"
-                   href="{{ url_for('comic.show', index=comic) }}">目录</a>
+                   href="{{ url_for('comic.show', index=comic.id) }}">目录</a>
             </li>
 
             {% if nxt %}

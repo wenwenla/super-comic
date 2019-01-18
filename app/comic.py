@@ -47,10 +47,11 @@ def read(chapter, content=None):
         return redirect(url_for('auth.login'))
 
     chapter_obj = Chapter.query.get(chapter)
+
     if chapter_obj is None:
         return render_template('404.html')
 
-    comic = Comic.query.get(chapter_obj.id)
+    comic = Comic.query.get(chapter_obj.comic)
     if comic is None:
         return render_template('404.html')
 
@@ -69,7 +70,7 @@ def read(chapter, content=None):
         pre = None
     if nxt is None or nxt.chapter != chapter:
         nxt = None
-    return render_template('comic-read.html', pic=pic, nxt=nxt, pre=pre, comic=comic.id)
+    return render_template('comic-read.html', pic=pic, nxt=nxt, pre=pre, comic=comic, chapter=chapter_obj)
 
 
 @bp.route('/task/<int:comic_id>')
