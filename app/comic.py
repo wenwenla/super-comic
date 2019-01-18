@@ -45,6 +45,15 @@ def show(index=1):
 def read(chapter, content=None):
     if session.get('user_id', None) is None:
         return redirect(url_for('auth.login'))
+
+    chapter_obj = Chapter.query.get(chapter)
+    if chapter_obj is None:
+        return render_template('404.html')
+
+    comic = Comic.query.get(chapter_obj.id)
+    if comic is None:
+        return render_template('404.html')
+
     if not content:
         pic = Content.query.filter_by(chapter=chapter).order_by(Content.id).first()
         if pic is not None:
@@ -60,7 +69,7 @@ def read(chapter, content=None):
         pre = None
     if nxt is None or nxt.chapter != chapter:
         nxt = None
-    return render_template('comic-read.html', pic=pic, nxt=nxt, pre=pre)
+    return render_template('comic-read.html', pic=pic, nxt=nxt, pre=pre, comic=comic.id)
 
 
 @bp.route('/task/<int:comic_id>')

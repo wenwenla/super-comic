@@ -14,6 +14,12 @@
     </style>
 {% endblock %}
 
+{% block special %}
+    {% if nxt %}
+        <link rel="prefetch" href="{{ nxt.url }}" as="image">
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <div class="row">
         <div class="col">
@@ -29,22 +35,27 @@
             {% if pre %}
                 <li class="page-item">
                     <a class="page-link"
-                       href="{{ url_for('comic.read', chapter=pre.chapter, content=pre.id) }}">Prev</a>
+                       href="{{ url_for('comic.read', chapter=pre.chapter, content=pre.id) }}">上一页</a>
                 </li>
             {% else %}
                 <li class="page-item disabled">
-                    <a class="page-link" href="#">Prev</a>
+                    <a class="page-link" href="#">上一页</a>
                 </li>
             {% endif %}
+
+            <li class="page-item">
+                <a class="page-link"
+                   href="{{ url_for('comic.show', index=comic) }}">目录</a>
+            </li>
 
             {% if nxt %}
                 <li class="page-item">
                     <a class="page-link"
-                       href="{{ url_for('comic.read', chapter=nxt.chapter, content=nxt.id) }}">Next</a>
+                       href="{{ url_for('comic.read', chapter=nxt.chapter, content=nxt.id) }}">下一页</a>
                 </li>
             {% else %}
                 <li class="page-item disabled">
-                    <a class="page-link" href="#">Next</a>
+                    <a class="page-link" href="#">下一页</a>
                 </li>
             {% endif %}
         </ul>
