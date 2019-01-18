@@ -9,7 +9,7 @@ bp = Blueprint('comic', __name__)
 
 @bp.route('/')
 def index():
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('comic.list_'))
 
 
 @bp.route('/list')
