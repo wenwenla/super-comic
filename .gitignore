@@ -1,3 +1,5 @@
+venv/
+.idea/
 *.7z
 *.pyc
 *.db
