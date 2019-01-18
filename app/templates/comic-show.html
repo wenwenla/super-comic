@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    漫画详情
+{% endblock %}
+
+{% block content %}
+    <h1>{{ comic['title'] }}</h1>
+    <div class="row">
+        <div class="col-3"><img class="rounded float-left" src="{{ comic['cover'] }}"></div>
+        <div class="col-6"><p>{{ comic['intro'] }}</p></div>
+    </div>
+    <hr>
+    <ul class="row">
+        {% for item in chapter %}
+            <li class="col-3">
+                {% if item['ok'] %}
+                    <a href="{{ url_for('comic.read', chapter=item['id']) }}">{{ item['name'] }} [已抓取]</a>
+                {% else %}
+                    {{ item['name'] }} [未抓取]
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+<a href="{{ url_for('comic.grab', comic_id=comic['id']) }}">
+    <button type="button" class="btn btn-primary">抓取全部</button>
+</a>
+{% endblock %}

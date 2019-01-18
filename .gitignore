@@ -1,0 +1,6 @@
+*.7z
+*.pyc
+*.db
+*.webp
+*.jpg
+app/static/*

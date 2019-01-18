@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}
+    搜索结果
+{% endblock %}
+{% block content %}
+{% if not result %}
+    <p>啥都找不到啊！</p>
+{% endif %}
+<div class="card-group row">
+    {% for item in result %}
+        <div class="col-3">
+            <div class="card text-center" style="height: 450px">
+                <img class="card-img-top" src="{{ item['cover'] }}" alt="Card image cap" align="center">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item['title'] }}</h5>
+                    <p class="card-text">{{ item['intro'][:20] }}...</p>
+                    <a href="{{ url_for('comic.show', index=item['id']) }}" class="btn btn-primary">去看看</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
