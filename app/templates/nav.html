@@ -32,6 +32,9 @@
             <li class="nav-item">
                 <a class="nav-link disable" href="{{ url_for('comic.tasks') }}">任务队列</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link disable" href="{{ url_for('comic.log') }}">修改历史</a>
+            </li>
         </ul>
         <form class="form-inline my-2 my-lg-0" action="{{ url_for('comic.search') }}" method="get">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="key">

@@ -8,9 +8,9 @@
 {% endif %}
 <div class="card-group row">
     {% for item in result %}
-        <div class="col-3">
-            <div class="card text-center" style="height: 450px">
-                <img class="card-img-top" src="{{ item['cover'] }}" alt="Card image cap" align="center">
+        <div class="col-sm-4 col-md-3">
+            <div class="card text-center" style="height: 500px">
+                <img class="card-img-top" src="{{ item['cover'] }}" alt="Cover" align="center">
                 <div class="card-body">
                     <h5 class="card-title">{{ item['title'] }}</h5>
                     <p class="card-text">{{ item['intro'][:20] }}...</p>

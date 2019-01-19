@@ -18,13 +18,26 @@
     {% if nxt %}
         <link rel="prefetch" href="{{ nxt.url }}" as="image">
     {% endif %}
+    <script>
+        function onClick(e) {
+            e = e || window.event;
+            let width = $(e.target).width();
+            let offsetX = e.pageX - $(e.target).offset().left;
+            let x = offsetX / width;
+            if (x >= 0.5) {
+                document.getElementById("next").click();
+            } else {
+                document.getElementById("prev").click();
+            }
+        }
+    </script>
 {% endblock %}
 
 {% block content %}
     <div class="row">
         <div class="col">
             {% if pic %}
-                <img class="aligncenter" style="max-width: 100%" src="{{ pic.url }}">
+                <img class="aligncenter" style="max-width: 100%" src="{{ pic.url }}" onclick="onClick(event)">
             {% endif %}
         </div>
     </div>
@@ -34,12 +47,12 @@
         <ul class="pagination justify-content-center">
             {% if pre %}
                 <li class="page-item">
-                    <a class="page-link"
+                    <a id="prev" class="page-link"
                        href="{{ url_for('comic.read', chapter=pre.chapter, content=pre.id) }}">上一页</a>
                 </li>
             {% else %}
                 <li class="page-item disabled">
-                    <a class="page-link" href="#">上一页</a>
+                    <a id="prev" class="page-link" href="#">上一页</a>
                 </li>
             {% endif %}
 
@@ -50,12 +63,12 @@
 
             {% if nxt %}
                 <li class="page-item">
-                    <a class="page-link"
+                    <a id="next" class="page-link"
                        href="{{ url_for('comic.read', chapter=nxt.chapter, content=nxt.id) }}">下一页</a>
                 </li>
             {% else %}
                 <li class="page-item disabled">
-                    <a class="page-link" href="#">下一页</a>
+                    <a id="next" class="page-link" href="#">下一页</a>
                 </li>
             {% endif %}
         </ul>

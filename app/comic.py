@@ -23,6 +23,8 @@ def list_(index=1):
 
 @bp.route('/search')
 def search():
+    if session.get('user_id', None) is None:
+        return redirect(url_for('auth.login'))
     key = request.args['key']
     result = Comic.query.filter(Comic.title.like('%{}%'.format(key))).limit(20).all()
     return render_template('comic-result.html', result=result)
@@ -149,3 +151,10 @@ def history(index=1):
             'chapter': Chapter.query.get(item.chapter)
         })
     return render_template('comic-history.html', history=history_list, result=result)
+
+
+@bp.route('/log')
+def log():
+    if session.get('user_id', None) is None:
+        return redirect(url_for('auth.login'))
+    return render_template("log.html")
