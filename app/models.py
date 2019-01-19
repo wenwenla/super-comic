@@ -79,6 +79,36 @@ class TaskStatus(db.Model):
         self.name = name
 
 
+class Like(db.Model):
+
+    user = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    like = db.Column(db.Integer, db.ForeignKey('comic.id'), primary_key=True)
+
+    def __init__(self, user, like):
+        self.user = user
+        self.like = like
+
+
+class History(db.Model):
+
+    user = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    comic = db.Column(db.Integer, db.ForeignKey('comic.id'), primary_key=True)
+    chapter = db.Column(db.Integer, db.ForeignKey('chapter.id'), nullable=False)
+    content = db.Column(db.Integer, db.ForeignKey('content.id'), nullable=False)
+    time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def __init__(self, user, comic, chapter, content):
+        self.user = user
+        self.comic = comic
+        self.chapter = chapter
+        self.content = content
+
+    def update(self, chapter, content):
+        self.chapter = chapter
+        self.content = content
+        self.time = datetime.datetime.utcnow()
+
+
 def init_comic():
     rt, _, f = next(os.walk('static/list'))
     cnt = 1

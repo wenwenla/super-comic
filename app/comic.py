@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 
 from app import db
-from app.models import Comic, Chapter, Content, TaskStatus
+from app.models import Comic, Chapter, Content, TaskStatus, History
 from app.tasks import echo, do_grab
 
 bp = Blueprint('comic', __name__)
@@ -46,6 +46,8 @@ def read(chapter, content=None):
     if session.get('user_id', None) is None:
         return redirect(url_for('auth.login'))
 
+    user_id = session['user_id']
+
     chapter_obj = Chapter.query.get(chapter)
 
     if chapter_obj is None:
@@ -65,6 +67,14 @@ def read(chapter, content=None):
         return render_template('404.html')
     nxt = Content.query.get(content + 1)
     pre = Content.query.get(content - 1)
+
+    history = History.query.get((user_id, comic.id))
+    if history is None:
+        db.session.add(History(user_id, comic.id, chapter, content))
+    else:
+        history.update(chapter, content)
+
+    db.session.commit()
 
     if pre is None or pre.chapter != chapter:
         pre = None
@@ -121,3 +131,21 @@ def tasks(index=1):
     for item in task_queue.items:
         info.append(get_result(item.task_id))
     return render_template('task-queue.html', info=zip(task_queue.items, info), queue=task_queue)
+
+
+@bp.route('/history')
+@bp.route('/history/<int:index>')
+def history(index=1):
+    if session.get('user_id', None) is None:
+        return redirect(url_for('auth.login'))
+    user_id = session['user_id']
+    history_list = History.query.filter_by(user=user_id)\
+        .order_by(History.time.desc()).paginate(index, per_page=10, error_out=False)
+    result = []
+    for item in history_list.items:
+        result.append({
+            'history': item,
+            'comic': Comic.query.get(item.comic),
+            'chapter': Chapter.query.get(item.chapter)
+        })
+    return render_template('comic-history.html', history=history_list, result=result)
