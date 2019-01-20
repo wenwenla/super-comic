@@ -8,7 +8,7 @@ bp = Blueprint('comic', __name__)
 
 
 @bp.route('/')
-def index():
+def _():
     return redirect(url_for('comic.list_'))
 
 
@@ -70,19 +70,28 @@ def read(chapter, content=None):
     nxt = Content.query.get(content + 1)
     pre = Content.query.get(content - 1)
 
-    history = History.query.get((user_id, comic.id))
-    if history is None:
+    history_obj = History.query.get((user_id, comic.id))
+    if history_obj is None:
         db.session.add(History(user_id, comic.id, chapter, content))
     else:
-        history.update(chapter, content)
+        history_obj.update(chapter, content)
 
     db.session.commit()
-
+    nxt_content = None
+    nxt_chapter = None
     if pre is None or pre.chapter != chapter:
         pre = None
     if nxt is None or nxt.chapter != chapter:
+        nxt_content = nxt
         nxt = None
-    return render_template('comic-read.html', pic=pic, nxt=nxt, pre=pre, comic=comic, chapter=chapter_obj)
+    if nxt_content is not None:
+        nxt_chapter = Chapter.query.get(nxt_content.chapter)
+        if nxt_chapter.comic != comic.id:
+            nxt_content = None
+            nxt_chapter = None
+
+    return render_template('comic-read.html', pic=pic, nxt=nxt, pre=pre, comic=comic, chapter=chapter_obj,
+                           nxt_chapter=nxt_chapter, nxt_content=nxt_content)
 
 
 @bp.route('/task/<int:comic_id>')

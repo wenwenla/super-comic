@@ -129,9 +129,6 @@
 {% endblock %}
 {% block content %}
 
-    {% for message in get_flashed_messages() %}
-        <div class="flash">{{ message }}</div>
-    {% endfor %}
     <div class="text-center">
         {% for message in get_flashed_messages() %}
             <div style="color: red">{{ message }}</div>
