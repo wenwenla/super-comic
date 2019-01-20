@@ -19,6 +19,14 @@
         <link rel="prefetch" href="{{ nxt.url }}" as="image">
     {% endif %}
     <script>
+        document.onkeydown = function (event) {
+            let keyCode = event.code;
+            if (keyCode === 'ArrowRight') {
+                document.getElementById("next").click();
+            } else if(keyCode === 'ArrowLeft') {
+                document.getElementById("prev").click();
+            }
+        };
         function onClick(e) {
             e = e || window.event;
             let width = $(e.target).width();
