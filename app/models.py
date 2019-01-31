@@ -32,6 +32,8 @@ class Chapter(db.Model):
     src = db.Column(db.String(64), nullable=False)
     name = db.Column(db.String(32), nullable=False)
     ok = db.Column(db.Boolean, default=False)
+    next = db.Column(db.Integer, nullable=True)
+    prev = db.Column(db.Integer, nullable=True)
 
     def __init__(self, comic, src, name):
         self.comic = comic
@@ -47,6 +49,8 @@ class Content(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     chapter = db.Column(db.Integer, db.ForeignKey('chapter.id'), nullable=False)
     url = db.Column(db.String(64), nullable=False)
+    prev = db.Column(db.Integer, nullable=True)
+    next = db.Column(db.Integer, nullable=True)
 
     def __init__(self, chapter, url):
         self.chapter = chapter
@@ -156,11 +160,38 @@ def init_content():
     db.session.commit()
 
 
+def init_chapter_link():
+    chapters = Chapter.query.order_by('id').all()
+    prev = None
+    print('Items count {}'.format(len(chapters)))
+    for item in chapters:
+        if prev is not None and prev.comic == item.comic:
+            item.prev = prev.id
+            prev.next = item.id
+        prev = item
+    db.session.commit()
+
+
+def init_content_link():
+    contents = Content.query.order_by('id').all()
+    prev = None
+    print('Items count {}'.format((len(contents))))
+    for item in contents:
+        if prev is not None and prev.chapter == item.chapter:
+            item.prev = prev.id
+            prev.next = item.id
+        prev = item
+    db.session.commit()
+
+
 @click.command('init-db')
 @with_appcontext
 def init_db_command():
     # db.drop_all()
     db.create_all()
+    init_chapter_link()
+    init_content_link()
+    # init_chapter_link()
     # init_comic()
     # init_chapter()
     # init_content()

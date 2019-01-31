@@ -67,31 +67,22 @@ def read(chapter, content=None):
         pic = Content.query.get(content)
     if pic is None:
         return render_template('404.html')
-    nxt = Content.query.get(content + 1)
-    pre = Content.query.get(content - 1)
+    nxt = Content.query.get(pic.next) if pic.next is not None else None
+    pre = Content.query.get(pic.prev) if pic.prev is not None else None
 
     history_obj = History.query.get((user_id, comic.id))
     if history_obj is None:
         db.session.add(History(user_id, comic.id, chapter, content))
     else:
         history_obj.update(chapter, content)
-
     db.session.commit()
-    nxt_content = None
-    nxt_chapter = None
-    if pre is None or pre.chapter != chapter:
-        pre = None
-    if nxt is None or nxt.chapter != chapter:
-        nxt_content = nxt
-        nxt = None
-    if nxt_content is not None:
-        nxt_chapter = Chapter.query.get(nxt_content.chapter)
-        if nxt_chapter.comic != comic.id:
-            nxt_content = None
-            nxt_chapter = None
 
+    if nxt is None:
+        nxt_chapter = Chapter.query.get(chapter_obj.next) if chapter_obj.next is not None else None
+    else:
+        nxt_chapter = None
     return render_template('comic-read.html', pic=pic, nxt=nxt, pre=pre, comic=comic, chapter=chapter_obj,
-                           nxt_chapter=nxt_chapter, nxt_content=nxt_content)
+                           nxt_chapter=nxt_chapter)
 
 
 @bp.route('/task/<int:comic_id>')
